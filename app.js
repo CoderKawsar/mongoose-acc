@@ -197,6 +197,7 @@ app.get("/api/v1/product", async (req, res, next) => {
     //   .gt(10)
     //   .limit(3);
 
+    // finding single product
     // const products = await Product.findById("6408a446e6172526c287bc67");
     // const products = await Product.findById(undefined);
     // const products = await Product.find({ _id: undefined });
