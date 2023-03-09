@@ -1,6 +1,7 @@
 const {
   getProductService,
   createProductService,
+  updateProductService,
 } = require("../services/product.services");
 
 module.exports.getProducts = async (req, res, next) => {
@@ -34,8 +35,25 @@ module.exports.createProduct = async (req, res, next) => {
     });
   } catch (error) {
     res.status(400).json({
-      status: "fail",
+      status: "failed",
       message: "Data not saved",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.updateProduct = async (req, res) => {
+  try {
+    const result = await updateProductService(req.params.id, req.body);
+    res.status(200).json({
+      status: "success",
+      message: "Product updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "Couldn't update data",
       error: error.message,
     });
   }

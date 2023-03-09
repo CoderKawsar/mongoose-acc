@@ -75,3 +75,21 @@ exports.createProductService = async (data) => {
 
   return result;
 };
+
+exports.updateProductService = async (productId, data) => {
+  //   const result = await Product.updateOne(
+  //     { _id: productId },
+  //     { $set: data },
+  //     { runValidators: true }
+  //   );
+
+  //   const result = await Product.updateOne(
+  //     { _id: productId },
+  //     { $inc: 3 },
+  //     { runValidators: true }
+  //   );
+
+  const product = await Product.findById(productId);
+  const result = await product.set(data).save();
+  return result;
+};
