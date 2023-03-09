@@ -110,10 +110,6 @@ productSchema.methods.logger = function () {
 const Product = mongoose.model("Product", productSchema);
 // const Product = mongoose.model('Model Name', SchemaName)
 
-app.get("/", (req, res) => {
-  res.send("Route is working! YaY!");
-});
-
 // posting to database
 app.post("/api/v1/product", async (req, res, next) => {
   try {
@@ -144,6 +140,82 @@ app.post("/api/v1/product", async (req, res, next) => {
       error: error.message,
     });
   }
+});
+
+app.get("/api/v1/product", async (req, res, next) => {
+  try {
+    // const products = await Product.find({});
+
+    // const products = await Product.find({ _id: "6408a34606391a7010b228d7" });
+
+    // const products = await Product.find({
+    //   $or: [{ _id: "6408a446e6172526c287bc67" }, { name: "Hammer" }],
+    // });
+
+    // const products = await Product.find({
+    //   status: { $ne: "out-of-stock" },
+    // });
+
+    // const products = await Product.find({
+    //   quantity: { $gte: 20 },
+    // });
+
+    // const products = await Product.find({
+    //   name: { $in: ["chal", "dal"] },
+    // });
+
+    // only name and quantity fields are served
+    // const products = await Product.find({}, "name quantity");
+
+    // all fields shown except name and quantity
+    // const products = await Product.find({}, "-name -quantity");
+
+    // only limited(2) products should be shown
+    // const products = await Product.find({}, "-name -quantity").limit(2);
+
+    // sort data by quantity in descending order
+    // const products = await Product.find({}).sort({
+    //   quantity: -1,
+    // });
+
+    // projection - only name field to be shown
+    // const products = await Product.find({}).select({
+    //   name: 1,
+    // });
+
+    // const products = await Product.find({}).where("name").equals("Hammer");
+    // const products = await Product.find({})
+    //   .where("name")
+    //   .equals("Hammer")
+    //   .where("quantity")
+    //   .gte(10);
+
+    // const products = await Product.find({})
+    //   .where("name")
+    //   .equals(/\w/)
+    //   .where("quantity")
+    //   .gt(10)
+    //   .limit(3);
+
+    // const products = await Product.findById("6408a446e6172526c287bc67");
+    // const products = await Product.findById(undefined);
+    // const products = await Product.find({ _id: undefined });
+
+    res.status(200).json({
+      status: "success",
+      data: products,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "Failed to get data",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("Route is working! YaY!");
 });
 
 module.exports = app;
