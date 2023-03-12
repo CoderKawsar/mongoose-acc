@@ -5,11 +5,34 @@ const {
   bulkUpdateProductService,
   deleteProductService,
   bulkDeleteProductService,
+  seedProductsService,
 } = require("../services/product.services");
 
 module.exports.getProducts = async (req, res, next) => {
   try {
-    const products = await getProductService();
+    const filters = { ...req.query };
+    const excludeFields = ["sort", "page", "limit"];
+    excludeFields.forEach((field) => {
+      delete filters[field];
+    });
+
+    const queries = {};
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      queries.sortBy = sortBy;
+    }
+
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      queries.fields = fields;
+      delete filters["fields"];
+    }
+
+    if (req.query.limit) {
+      queries.limit = req.query.limit;
+    }
+
+    const products = await getProductService(filters, queries);
 
     res.status(200).json({
       status: "success",
@@ -106,7 +129,6 @@ module.exports.deleteProduct = async (req, res) => {
 };
 
 module.exports.bulkDeleteProduct = async (req, res) => {
-  console.log(req.body);
   try {
     const result = await bulkDeleteProductService(req.body.ids);
     res.status(200).json({
@@ -118,6 +140,23 @@ module.exports.bulkDeleteProduct = async (req, res) => {
     res.status(400).json({
       status: "failed",
       message: "Couldn't delete products",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.seedProducts = async (req, res) => {
+  try {
+    const result = await seedProductsService(+req.params.productNo);
+    res.status(200).json({
+      status: "success",
+      message: "Products seeded successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "Couldn't seed products",
       error: error.message,
     });
   }

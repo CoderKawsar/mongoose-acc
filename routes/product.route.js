@@ -3,6 +3,8 @@ const productController = require("../controllers/product.controller");
 
 const router = express.Router();
 
+router.route("/seed-db/:productNo").post(productController.seedProducts);
+
 router.route("/bulk-update").patch(productController.bulkUpdateProduct);
 router.route("/bulk-delete").delete(productController.bulkDeleteProduct);
 

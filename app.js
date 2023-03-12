@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const mongoose = require("mongoose");
-const { getProducts, addProduct } = require("./controllers/product.controller");
 
 app.use(express.json());
 app.use(cors());

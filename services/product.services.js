@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
+const { faker } = require("@faker-js/faker");
 
-exports.getProductService = async () => {
+exports.getProductService = async (filters, queries) => {
   // const products = await Product.find({ _id: "6408a34606391a7010b228d7" });
 
   // const products = await Product.find({
@@ -56,7 +57,15 @@ exports.getProductService = async () => {
   // const products = await Product.findById("6408a446e6172526c287bc67");
   // const products = await Product.findById(undefined);
   // const products = await Product.find({ _id: undefined });
-  const products = await Product.find({});
+  // const products = await Product.find(query).sort("name quantity price");
+  // const products = await Product.find(query);
+  // const products = await Product.find({filters})
+  //   .select(queries.fields)
+  //   .sort(queries.sortBy);
+  const products = await Product.find(filters)
+    .select(queries.fields)
+    .sort(queries.sortBy)
+    .limit(queries.limit);
   return products;
 };
 
@@ -115,6 +124,33 @@ exports.deleteProductService = async (id) => {
 
 exports.bulkDeleteProductService = async (ids) => {
   // const result = await Product.deleteMany({ _id: { $in: ids } });
-  const result = await Product.deleteMany({ _id: ids });
+
+  // this'll delete every product in the db
+  const result = await Product.deleteMany({});
+
+  // const result = await Product.deleteMany({ _id: ids });
   return result;
+};
+
+exports.seedProductsService = async (productNo) => {
+  const statuses = ["in-stock", "out-of-stock", "discontinued"];
+  const units = ["kg", "litre", "pcs"];
+  for (let i = 0; i < productNo; i++) {
+    let generatedProductName = faker.commerce.product();
+    let foundProduct = await Product.findOne({
+      name: generatedProductName,
+    });
+
+    if (foundProduct) {
+      generatedProductName = generatedProductName + " " + i;
+    }
+    await Product.create({
+      name: generatedProductName,
+      description: faker.lorem.paragraph(),
+      price: faker.commerce.price(),
+      quantity: Math.floor(Math.random() * 121),
+      unit: units[Math.floor(Math.random() * 3)],
+      status: statuses[Math.floor(Math.random() * 3)],
+    });
+  }
 };
