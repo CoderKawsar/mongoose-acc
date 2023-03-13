@@ -10,26 +10,47 @@ const {
 
 module.exports.getProducts = async (req, res, next) => {
   try {
-    const filters = { ...req.query };
+    // removing sort/page/limit strings from req.query(filters)
+    let filters = { ...req.query };
     const excludeFields = ["sort", "page", "limit"];
     excludeFields.forEach((field) => {
       delete filters[field];
     });
 
+    // for .select which fields to show
     const queries = {};
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      queries.sortBy = sortBy;
-    }
-
     if (req.query.fields) {
       const fields = req.query.fields.split(",").join(" ");
       queries.fields = fields;
       delete filters["fields"];
     }
 
+    // gt, lt, gte, lte
+    let filterString = JSON.stringify(filters);
+    filterString = filterString.replace(
+      /\b(gt|gte|lt|lte)\b/g,
+      (match) => `$${match}`
+    );
+    filters = JSON.parse(filterString);
+
+    // if sort given
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      queries.sortBy = sortBy;
+    }
+
+    // if limit given fetch it or limit=10
     if (req.query.limit) {
-      queries.limit = req.query.limit;
+      queries.limit = parseInt(req.query.limit);
+    } else {
+      queries.limit = 10;
+    }
+
+    // if page given
+    if (req.query.page) {
+      queries.page = parseInt(req.query.page);
+    } else {
+      queries.page = 1;
     }
 
     const products = await getProductService(filters, queries);

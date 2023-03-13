@@ -65,8 +65,11 @@ exports.getProductService = async (filters, queries) => {
   const products = await Product.find(filters)
     .select(queries.fields)
     .sort(queries.sortBy)
+    .skip((queries.page - 1) * queries.limit)
     .limit(queries.limit);
-  return products;
+  const totalProducts = await Product.countDocuments(filters);
+  const pageCount = Math.ceil(totalProducts / queries.limit);
+  return { totalProducts, pageCount, products };
 };
 
 exports.createProductService = async (data) => {
