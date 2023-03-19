@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 const { faker } = require("@faker-js/faker");
+const Brand = require("../models/Brand");
 
 exports.getProductService = async (filters, queries) => {
   // const products = await Product.find({ _id: "6408a34606391a7010b228d7" });
@@ -73,11 +74,14 @@ exports.getProductService = async (filters, queries) => {
 };
 
 exports.createProductService = async (data) => {
-  const product = new Product(data);
-  const result = await product.save();
+  // const product = new Product(data);
+  // const result = await product.save();
 
   // using create
-  // const result = await Product.create(req.body);
+  const product = await Product.create(data);
+  const { _id: productId, brand } = product;
+
+  await Brand.updateOne({ _id: brand.id }, { $push: { products: productId } });
 
   // const product = new Product(req.body);
   // if (product.quantity == 0) {
@@ -85,7 +89,7 @@ exports.createProductService = async (data) => {
   // }
   // const result = await product.save();
 
-  return result;
+  return product;
 };
 
 exports.updateProductService = async (productId, data) => {

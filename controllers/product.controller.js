@@ -182,3 +182,16 @@ module.exports.seedProducts = async (req, res) => {
     });
   }
 };
+
+module.exports.fileUpload = async (req, res) => {
+  try {
+    // res.status(200).json(req.file);
+    res.status(200).json(req.files);
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "Couldn't upload image",
+      error: error.message,
+    });
+  }
+};
