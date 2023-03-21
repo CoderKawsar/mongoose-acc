@@ -73,7 +73,7 @@ module.exports.createProduct = async (req, res, next) => {
     // using save
     const result = await createProductService(req.body);
 
-    result.logger();
+    // result.logger();
 
     res.status(200).json({
       status: "success",

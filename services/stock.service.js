@@ -54,26 +54,26 @@ exports.getAStockByIdService = async (id) => {
   //     $match: {},
   //   },
   // ]);
-  const stocks = await Stock.aggregate([
-    {
-      $match: {},
-    },
-    {
-      $project: {
-        store: 1,
-        price: { $convert: { input: "$price", to: "int" } },
-        quantity: 1,
-      },
-    },
-    {
-      $group: {
-        _id: "$store.name",
-        totalProductPrice: {
-          $sum: { $multiply: ["$price", "$quantity"] },
-        },
-      },
-    },
-  ]);
+  // const stocks = await Stock.aggregate([
+  //   {
+  //     $match: {},
+  //   },
+  //   {
+  //     $project: {
+  //       store: 1,
+  //       price: { $convert: { input: "$price", to: "int" } },
+  //       quantity: 1,
+  //     },
+  //   },
+  //   {
+  //     $group: {
+  //       _id: "$store.name",
+  //       totalProductPrice: {
+  //         $sum: { $multiply: ["$price", "$quantity"] },
+  //       },
+  //     },
+  //   },
+  // ]);
 
   return { stock };
 };
